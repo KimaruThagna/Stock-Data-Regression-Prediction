@@ -29,5 +29,6 @@ for model in models:
     clf = models[model].fit(X_train,y_train)
     predict = clf.predict(X_test)
     print(r2_score(y_test,predict))
+    print(clf.score(X_test,y_test))
     print(model)
 
