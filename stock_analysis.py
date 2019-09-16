@@ -29,3 +29,10 @@ sns.lineplot(data=df, x=df['Date'], y=mavg, ax=ax)
 plt.legend(['APPL', 'MAVG'])
 plt.title("SMOOTHING EFFECT OF MOVING AVERAGE")
 plt.show()
+# calculting expected return. Pt/(Pt-1)-1 where Pt is the stoc value at day t
+print(true_stock_price.head())
+print(true_stock_price.shift(1).head())
+returns = true_stock_price/true_stock_price.shift(1)-1 # technique when you want to perform operation between items within same columns
+sns.lineplot(x=df['Date'], y=returns)
+plt.title("Expected Returns RANGE(-1 to 1")
+plt.show()
