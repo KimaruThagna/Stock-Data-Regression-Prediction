@@ -32,7 +32,15 @@ plt.show()
 # calculting expected return. Pt/(Pt-1)-1 where Pt is the stoc value at day t
 print(true_stock_price.head())
 print(true_stock_price.shift(1).head())
-returns = true_stock_price/true_stock_price.shift(1)-1 # technique when you want to perform operation between items within same columns
+returns = true_stock_price/true_stock_price.shift(1)-1 # technique when you want to perform operation between items within same columns same as pct_change
 sns.lineplot(x=df['Date'], y=returns)
 plt.title("Expected Returns RANGE(-1 to 1")
 plt.show()
+
+# analyze potential competitors
+competitors = web.DataReader(['AAPL', 'GE', 'GOOG', 'IBM', 'MSFT'],'yahoo',start=start,end=end)['Adj Close']
+print(competitors)
+
+# is there a correlation among competitors?
+retscomp = competitors.pct_change()
+correlation_map = retscomp.corr()
