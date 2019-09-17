@@ -46,7 +46,8 @@ print(competitors)
 retscomp = competitors.pct_change()
 correlation_map = retscomp.corr()
 print(correlation_map)
-sns.heatmap(correlation_map)
+# Visualize correlation among stocks
+sns.heatmap(correlation_map, cmap="Greens")
 plt.title("Correlation Matrix among Stocks")
 plt.show()
 
