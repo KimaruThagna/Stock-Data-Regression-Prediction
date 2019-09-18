@@ -131,3 +131,23 @@ print('The linear regression confidence is ', confidencereg)
 print('The quadratic regression 2 confidence is ', confidencepoly2)
 print('The quadratic regression 3 confidence is ', confidencepoly3)
 print('The knn regression confidence is ', confidenceknn)
+
+# plot the forecast
+
+forecast_set = clfpoly3.predict(X_lately)
+dfreg['Forecast'] = np.nan
+
+last_date = dfreg.iloc[-1].name
+last_unix = last_date
+next_unix = last_unix + datetime.timedelta(days=1)
+
+for i in forecast_set:
+    next_date = next_unix
+    next_unix += datetime.timedelta(days=1)
+    dfreg.loc[next_date] = [np.nan for _ in range(len(dfreg.columns)-1)]+[i]
+dfreg['Adj Close'].tail(500).plot()
+dfreg['Forecast'].tail(500).plot()
+plt.legend(loc=4)
+plt.xlabel('Date')
+plt.ylabel('Price')
+plt.show()
