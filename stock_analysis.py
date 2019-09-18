@@ -7,6 +7,12 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 from sklearn import preprocessing
+from sklearn.linear_model import LinearRegression
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.linear_model import Ridge
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import make_pipeline
+from sklearn.model_selection import train_test_split
 # define starting and ending dates of the time window you want
 
 start = datetime.datetime(2000, 1, 1)
@@ -97,3 +103,31 @@ X = X[:-forecast_out]
 # Separate label and identify it as y
 y = np.array(dfreg['label'])
 y = y[:-forecast_out]
+
+X_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+# Linear regression
+clfreg = LinearRegression(n_jobs=-1)
+clfreg.fit(X_train, y_train)
+# Quadratic Regression 2
+clfpoly2 = make_pipeline(PolynomialFeatures(2), Ridge())
+clfpoly2.fit(X_train, y_train)
+
+# Quadratic Regression 3
+clfpoly3 = make_pipeline(PolynomialFeatures(3), Ridge())
+clfpoly3.fit(X_train, y_train)
+
+# KNN Regression
+clfknn = KNeighborsRegressor(n_neighbors=2)
+clfknn.fit(X_train, y_train)
+
+# confidence/accuracy
+confidencereg = clfreg.score(x_test, y_test)
+confidencepoly2 = clfpoly2.score(x_test,y_test)
+confidencepoly3 = clfpoly3.score(x_test,y_test)
+confidenceknn = clfknn.score(x_test, y_test)
+
+# print results
+print('The linear regression confidence is ', confidencereg)
+print('The quadratic regression 2 confidence is ', confidencepoly2)
+print('The quadratic regression 3 confidence is ', confidencepoly3)
+print('The knn regression confidence is ', confidenceknn)
