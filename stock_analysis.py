@@ -67,9 +67,16 @@ plt.ylabel("Returns GOOG")
 plt.show()
 
 # STOCK RETURN RATE(average rate of return AND RISK(standard deviation of returns)
+'''
+We can plot a boundary line which determines whether to buy or sell stocks.
+This boundary line is dictated by an individuals risk appetite. Higher risk appetite allows the investor to buy
+higher risk stocks with higher returns.
+The boundary line can be initialized by doing a regression line of best fit. This line can be further varied by tuning
+one's risk appetite. Higher risk appetite allows one to buy higher risk stocks with great returns
+'''
 
 figure, ax = plt.subplots(1)
-sns.scatterplot(retscomp.mean(),retscomp.std(), ax=ax)
+sns.regplot(retscomp.mean(),retscomp.std(), ax=ax,fit_reg=True)
 plt.xlabel("Return Rate")
 plt.ylabel("Risk")
 plt.title("Buy Sell Decision Chart")
@@ -80,8 +87,14 @@ for label, x, y in zip(retscomp.columns, retscomp.mean(), retscomp.std()):
          textcoords = 'offset points', ha = 'right', va = 'bottom',
          bbox = dict(boxstyle = 'round,pad=0.5', fc = 'yellow', alpha = 0.5),
          arrowprops = dict(arrowstyle = '->', connectionstyle = 'arc3,rad=0'))
+
+ax.text(0.001, 0.012, 'BUY', style='italic',
+        bbox={'facecolor':'blue', 'alpha':0.5, 'pad':10})
+
+ax.text(0.001, 0.024, 'SELL', style='italic',
+        bbox={'facecolor':'red', 'alpha':0.5, 'pad':10})
 plt.show()
-#
+
 # # feature engineering for machine learning
 # dfreg = df.loc[:,["Adj Close","Volume"]]
 # dfreg["HL_PCT"] = (df["High"]-df["Low"]) / df["Close"] * 100.0
