@@ -1,9 +1,12 @@
 import pandas as pd
-import datetime
+import datetime, math
 import pandas_datareader.data as web
 from pandas import Series, DataFrame
 import seaborn as sns
+import numpy as np
 from matplotlib import pyplot as plt
+
+from sklearn import preprocessing
 # define starting and ending dates of the time window you want
 
 start = datetime.datetime(2000, 1, 1)
@@ -70,3 +73,27 @@ for label, x, y in zip(retscomp.columns, retscomp.mean(), retscomp.std()):
         arrowprops = dict(arrowstyle = '->', connectionstyle = 'arc3,rad=0'))
 plt.show()
 
+# feature engineering for machine learning
+dfreg = df.loc[:,["Adj Close","Volume"]]
+dfreg["HL_PCT"] = (df["High"]-df["Low"]) / df["Close"] * 100.0
+dfreg["PCT_change"] = (df["Close"]-df["Open"]) / df["Open"] * 100.0
+print(dfreg.head())
+
+# data preprocessing
+# Drop missing value
+dfreg.fillna(value=-99999, inplace=True)
+
+# We want to separate 1 percent of the data to forecast
+forecast_out = int(math.ceil(0.01 * len(dfreg)))
+# Separating the label here, we want to predict the AdjClose
+forecast_col = 'Adj Close'
+dfreg['label'] = dfreg[forecast_col].shift(-forecast_out)
+X = np.array(dfreg.drop(['label'], 1))
+# Scale the X so that everyone can have the same distribution for linear regression
+X = preprocessing.scale(X)
+# Finally We want to find Data Series of late X and early X (train) for model generation and evaluation
+X_lately = X[-forecast_out:]
+X = X[:-forecast_out]
+# Separate label and identify it as y
+y = np.array(dfreg['label'])
+y = y[:-forecast_out]
